@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class JobRepository @Inject constructor(private val dao: JobDao) {
 
-    val allNotes: Flow<List<JobEntity>> = dao.getAllNotes()
+    val allJobs: Flow<List<JobEntity>> = dao.getAllJobs()
 
     suspend fun insert(job:JobEntity) = dao.insert(job)
 

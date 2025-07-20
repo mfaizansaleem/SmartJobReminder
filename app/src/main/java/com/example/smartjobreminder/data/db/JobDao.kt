@@ -16,5 +16,5 @@ interface JobDao {
     suspend fun delete(note: JobEntity)
 
     @Query("SELECT * FROM JobEntity ORDER BY jobId DESC")
-    fun getAllNotes(): Flow<List<JobEntity>>
+    fun getAllJobs(): Flow<List<JobEntity>>
 }
