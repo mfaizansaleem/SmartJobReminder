@@ -11,6 +11,6 @@ data class JobEntity(
     val company: String,
     val status: JobStatus,
     val deadLine: String,
-    val bookMarked: Boolean = false,
+    var bookMarked: Boolean = false,
 
-)
+    )

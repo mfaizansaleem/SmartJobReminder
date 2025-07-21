@@ -1,5 +1,6 @@
 package com.example.smartjobreminder.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.smartjobreminder.data.db.JobEntity
@@ -48,7 +50,7 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = hiltViewModel<HomeViewModel>()
 ) {
-
+    val jobs by viewModel.jobsList.collectAsState()
     Scaffold(
         floatingActionButton = {AddJobFAB { navController.navigate(Destinations.AddJob.route)}},
         content = {
@@ -59,14 +61,14 @@ fun HomeScreen(
                     query = viewModel.searchQuery.collectAsState().value,
                     onQueryChange = { viewModel.searchQuery.value = it }
                 )
-                JobFilterChipRow("All") { viewModel.applyFilter(it)}
+                JobFilterChipRow(viewModel.selectedFilter.collectAsState().value) { viewModel.selectedFilter.value = it }
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
                 ) {
-                    items(viewModel.jobsList.value) {
-                        JobListItem(job = it)
+                    items(jobs) {
+                        JobListItem(job = it){viewModel.updateJob(it)}
                     }
                 }
             }
@@ -111,7 +113,7 @@ fun SimpleSearchBar(
 }
 
 @Composable
-fun JobListItem(job: JobEntity) {
+fun JobListItem(job: JobEntity,onClick: (JobEntity) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -134,7 +136,10 @@ fun JobListItem(job: JobEntity) {
                     imageVector = if (job.bookMarked) Icons.Filled.Star else Icons.Outlined.Star,
                     contentDescription = if (job.bookMarked) "Bookmarked" else "Not Bookmarked",
                     tint = if (job.bookMarked) Color(0xFFFFC107) else Color.LightGray,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp).clickable{
+                        val updatedJob = job.copy(bookMarked = !job.bookMarked)
+                        onClick(updatedJob)
+                    }
                 )
             }
             Text(

@@ -13,12 +13,14 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: JobRepository) : ViewModel() {
 
-    private val selectedFilter = MutableStateFlow("All")
+
+    val selectedFilter = MutableStateFlow("All")
     val searchQuery = MutableStateFlow("")
     private val allJobs = repository.allJobs
     val jobsList: StateFlow<List<JobEntity>> = combine(
@@ -27,7 +29,7 @@ class HomeViewModel @Inject constructor(private val repository: JobRepository) :
         selectedFilter
     ) { jobs, query, filter ->
         jobs.filter { job ->
-            val matchesQuery = job.title.contains(query, ignoreCase = true)
+            val matchesQuery = if (query.isBlank()) true else job.title.contains(query, ignoreCase = true)
 
             val matchesFilter = when (filter) {
                 "All" -> true
@@ -45,7 +47,10 @@ class HomeViewModel @Inject constructor(private val repository: JobRepository) :
         emptyList()
     )
 
-    fun applyFilter(filter: String) {
-        selectedFilter.value = filter
+    fun updateJob(entity: JobEntity) {
+        viewModelScope.launch {
+            repository.update(entity)
+        }
+
     }
 }

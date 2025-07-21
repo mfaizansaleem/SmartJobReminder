@@ -20,6 +20,9 @@ fun SmartJobNavGraph(
         composable(Destinations.Home.route){
             HomeScreen(navController)
         }
+        composable(Destinations.AddJob.route){
+            AddJobScreen(navController)
+        }
     }
 }
 

@@ -12,4 +12,5 @@ class JobRepository @Inject constructor(private val dao: JobDao) {
     suspend fun insert(job:JobEntity) = dao.insert(job)
 
     suspend fun delete(job:JobEntity) = dao.delete(job)
+    suspend fun update(job: JobEntity) =dao.update(job)
 }
