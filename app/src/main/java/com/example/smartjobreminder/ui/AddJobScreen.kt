@@ -54,7 +54,7 @@ fun AddJobScreen(
     }
     LaunchedEffect(Unit) {
         viewModel.setJobReminder.collect { job ->
-            scheduleJobReminder(context, job!!)
+            scheduleJobReminder(context, job)
         }
     }
     Column(

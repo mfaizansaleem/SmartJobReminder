@@ -31,15 +31,9 @@ class AddJobViewModel @Inject constructor(private val repository: JobRepository)
     val deadline = MutableStateFlow("")
     val isBookmarked = MutableStateFlow(false)
 
-    private val _uiMessages = MutableSharedFlow<String>()
-    val uiMessages = _uiMessages.asSharedFlow()
+    val uiMessages = MutableSharedFlow<String>()
+    val setJobReminder = MutableSharedFlow<JobEntity>()
 
-    private val _setJobReminder = MutableSharedFlow<JobEntity>()
-    val setJobReminder = _setJobReminder.asSharedFlow().stateIn(
-        viewModelScope,
-        SharingStarted.Lazily,
-        null
-    )
     private fun validateFields(): Boolean {
         return title.value.isNotBlank() &&
                 company.value.isNotBlank() &&
@@ -57,13 +51,13 @@ class AddJobViewModel @Inject constructor(private val repository: JobRepository)
             )
             viewModelScope.launch {
                 repository.insert(job)
-                _uiMessages.emit("Job saved successfully")
-                _setJobReminder.emit(job)
+                uiMessages.emit("Job saved successfully")
+                setJobReminder.emit(job)
             }
 
         } else {
             viewModelScope.launch {
-                _uiMessages.emit("Please fill in all required fields.")
+                uiMessages.emit("Please fill in all required fields.")
             }
         }
     }

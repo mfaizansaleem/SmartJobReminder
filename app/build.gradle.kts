@@ -59,6 +59,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.room.runtime)
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.37.0")
     implementation("androidx.hilt:hilt-work:1.2.0")
     ksp(libs.androidx.room.compiler)
     ksp("androidx.hilt:hilt-compiler:1.2.0")
