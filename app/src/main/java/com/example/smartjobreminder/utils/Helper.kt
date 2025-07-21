@@ -24,7 +24,7 @@ fun scheduleJobReminder(context: Context, job: JobEntity) {
     if (delay > 0) {
         val data = Data.Builder()
             .putString("title", job.title)
-            .putString("description", "Reminder: \"${job.title}\" is due in 24 hours.")
+            .putString("description", "Reminder: \"${job.title}\" at ${job.company} is due in 24 hours.")
             .build()
 
         val workRequest = OneTimeWorkRequestBuilder<JobReminderWorker>()
