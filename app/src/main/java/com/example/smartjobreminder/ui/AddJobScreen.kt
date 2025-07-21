@@ -1,5 +1,6 @@
 package com.example.smartjobreminder.ui
 
+import android.widget.Toast
 import android.widget.CalendarView
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,14 +25,17 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.smartjobreminder.data.db.JobStatus
 import com.example.smartjobreminder.viewmodels.AddJobViewModel
+import com.example.smartjobreminder.utils.scheduleJobReminder
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -40,6 +44,19 @@ fun AddJobScreen(
     navController: NavController,
     viewModel: AddJobViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.uiMessages.collect { message ->
+            message.let {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    LaunchedEffect(Unit) {
+        viewModel.setJobReminder.collect { job ->
+            scheduleJobReminder(context, job!!)
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
